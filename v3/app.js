@@ -1,20 +1,13 @@
 let express = require("express"),
   app = express(),
   bodyParser = require("body-parser"),
-  mongoose = require("mongoose");
+  mongoose = require("mongoose"),
+  Campground = require("./models/campground"),
+  Comment = require("./models/comment");
 
 mongoose.connect("mongodb://localhost/yelp_camp");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
-
-// SCHEMA SETUP
-let campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
-
-let Campground = mongoose.model("Campground", campgroundSchema);
 
 // Campground.create(
 //   {
@@ -67,21 +60,19 @@ app.post("/campgrounds", (req, res) => {
 
 // SHOW - shows more info about one campground
 app.get("/campgrounds/new", (req, res) => {
-
   res.render("new.ejs");
 });
 
 app.get("/campgrounds/:id", (req, res) => {
-    // find the campground with provided ID
-    Campground.findById(req.params.id, (err, foundCampground) => {
-      if(err) { 
-        console.log(err);
-      } else {
-        // render show template with that campground
-        res.render("show", { campground: foundCampground });
-      }
-    });
-
+  // find the campground with provided ID
+  Campground.findById(req.params.id, (err, foundCampground) => {
+    if (err) {
+      console.log(err);
+    } else {
+      // render show template with that campground
+      res.render("show", { campground: foundCampground });
+    }
+  });
 });
 
 app.listen(3000, () => {
