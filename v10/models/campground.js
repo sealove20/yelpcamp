@@ -1,4 +1,5 @@
 let mongoose = require("mongoose");
+const Comment = require("./comment");
 
 let campgroundSchema = new mongoose.Schema({
   name: String,
@@ -17,6 +18,14 @@ let campgroundSchema = new mongoose.Schema({
       ref: "Comment"
     }
   ]
+});
+
+campgroundSchema.pre("remove", async function() {
+  await Comment.remove({
+    _id: {
+      $in: this.comments
+    }
+  });
 });
 
 module.exports = mongoose.model("Campground", campgroundSchema);
