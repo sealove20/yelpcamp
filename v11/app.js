@@ -2,6 +2,7 @@ let express = require("express"),
   app = express(),
   bodyParser = require("body-parser"),
   mongoose = require("mongoose"),
+  flash = require("connect-flash"),
   passport = require("passport"),
   LocalStrategy = require("passport-local"),
   methodOverride = require("method-override"),
@@ -15,7 +16,7 @@ const commentRoutes = require("./routes/comments"),
   campgroundRoutes = require("./routes/campgrounds"),
   indexRoutes = require("./routes/index");
 // seedDB();//seed the database
-
+app.use(flash());
 // PASSPORT CONFIGURATION
 app.use(
   require("express-session")({
@@ -38,6 +39,8 @@ app.use(methodOverride("_method"));
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
   next();
 });
 
